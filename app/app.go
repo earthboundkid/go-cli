@@ -11,11 +11,32 @@ import (
 	"github.com/peterbourgon/ff"
 )
 
+const AppName = "go-cli"
+
 func CLI(args []string) error {
-	fl := flag.NewFlagSet("app", flag.ContinueOnError)
+	a, err := parseArgs(args)
+	if err != nil {
+		return err
+	}
+	if err := a.exec(); err != nil {
+		fmt.Fprintf(os.Stderr, "Runtime error: %v\n", err)
+		return err
+	}
+
+	return nil
+}
+
+func parseArgs(args []string) (*app, error) {
+	fl := flag.NewFlagSet(AppName, flag.ContinueOnError)
 	src := flagext.FileOrURL(flagext.StdIO, nil)
 	fl.Var(src, "src", "source file or URL")
-	verbose := fl.Bool("verbose", false, "log debug output")
+	l := log.New(nil, AppName+" ", log.LstdFlags)
+	fl.Var(
+		flagext.Logger(l, flagext.LogVerbose),
+		"verbose",
+		`log debug output`,
+	)
+
 	fl.Usage = func() {
 		fmt.Fprintf(fl.Output(), `go-cli - a Go CLI application template cat clone
 
@@ -28,37 +49,20 @@ Options:
 		fl.PrintDefaults()
 	}
 	if err := ff.Parse(fl, args, ff.WithEnvVarPrefix("GO_CLI")); err != nil {
-		return err
-	}
-
-	return appExec(src, *verbose)
-}
-
-func appExec(src io.ReadCloser, verbose bool) error {
-	l := nooplogger
-	if verbose {
-		l = log.New(os.Stderr, "go-cli", log.LstdFlags).Printf
+		return nil, err
 	}
 	a := app{src, l}
-	if err := a.exec(); err != nil {
-		fmt.Fprintf(os.Stderr, "Runtime error: %v\n", err)
-		return err
-	}
-	return nil
+	return &a, nil
 }
-
-type logger = func(format string, v ...interface{})
-
-func nooplogger(format string, v ...interface{}) {}
 
 type app struct {
 	src io.ReadCloser
-	log logger
+	*log.Logger
 }
 
 func (a *app) exec() (err error) {
-	a.log("starting")
-	defer func() { a.log("done") }()
+	a.Println("starting")
+	defer func() { a.Println("done") }()
 
 	n, err := io.Copy(os.Stdout, a.src)
 	defer func() {
@@ -67,7 +71,7 @@ func (a *app) exec() (err error) {
 			err = e2
 		}
 	}()
-	a.log("copied %d bytes", n)
+	a.Printf("copied %d bytes\n", n)
 
 	return err
 }
