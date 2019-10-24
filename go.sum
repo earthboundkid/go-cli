@@ -1,8 +1,8 @@
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/carlmjohnson/exitcode v0.0.3 h1:TI8znPyuJdilIlLHqotKizJXBCHp5rkGq6YuJVqyxd0=
 github.com/carlmjohnson/exitcode v0.0.3/go.mod h1:xF8lj5nU2WLjbHlSOQS1dCa8WjOP38cihHLRD3/fXMI=
-github.com/carlmjohnson/flagext v0.0.5 h1:VmS1UJyAar7uqY4w59yVvu1lNSVJrwvm059AXZCnTko=
-github.com/carlmjohnson/flagext v0.0.5/go.mod h1:Eenv0epIUAr4NuedNmkzI8WmBmjIxZC239XcKxYS2ac=
+github.com/carlmjohnson/flagext v0.0.6 h1:JX3Qx+7hspQ1Lzlt2bLlg2Ezug3WK/oapgtQaGDGqz8=
+github.com/carlmjohnson/flagext v0.0.6/go.mod h1:Eenv0epIUAr4NuedNmkzI8WmBmjIxZC239XcKxYS2ac=
 github.com/mitchellh/go-wordwrap v1.0.0/go.mod h1:ZXFpozHsX6DPmq2I0TCekCxypsnAUbP2oI0UX1GXzOo=
 github.com/peterbourgon/ff v1.6.0 h1:DNnSOwtqmHfQ/yLgdOvtN4eFzP4ps+IjNhUEW9/ZkIg=
 github.com/peterbourgon/ff v1.6.0/go.mod h1:8rO4i98n/oYmyP28qiK6V4jGB85nMNVr+qwSErTwFrs=
