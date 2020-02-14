@@ -14,25 +14,25 @@ import (
 const AppName = "go-cli"
 
 func CLI(args []string) error {
-	a, err := parseArgs(args)
+	var app appEnv
+	err := app.ParseArgs(args)
+	if err == nil {
+		err = app.Exec()
+	}
 	if err != nil {
-		return err
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
 	}
-	if err := a.exec(); err != nil {
-		fmt.Fprintf(os.Stderr, "Runtime error: %v\n", err)
-		return err
-	}
-
-	return nil
+	return err
 }
 
-func parseArgs(args []string) (*app, error) {
+func (app *appEnv) ParseArgs(args []string) error {
 	fl := flag.NewFlagSet(AppName, flag.ContinueOnError)
 	src := flagext.FileOrURL(flagext.StdIO, nil)
+	app.src = src
 	fl.Var(src, "src", "source file or URL")
-	l := log.New(nil, AppName+" ", log.LstdFlags)
+	app.Logger = log.New(nil, AppName+" ", log.LstdFlags)
 	fl.Var(
-		flagext.Logger(l, flagext.LogVerbose),
+		flagext.Logger(app.Logger, flagext.LogVerbose),
 		"verbose",
 		`log debug output`,
 	)
@@ -47,31 +47,31 @@ Usage:
 Options:
 `)
 		fl.PrintDefaults()
+		fmt.Fprintln(fl.Output(), "")
 	}
 	if err := ff.Parse(fl, args, ff.WithEnvVarPrefix("GO_CLI")); err != nil {
-		return nil, err
+		return err
 	}
-	a := app{src, l}
-	return &a, nil
+	return nil
 }
 
-type app struct {
+type appEnv struct {
 	src io.ReadCloser
 	*log.Logger
 }
 
-func (a *app) exec() (err error) {
-	a.Println("starting")
-	defer func() { a.Println("done") }()
+func (app *appEnv) Exec() (err error) {
+	app.Println("starting")
+	defer func() { app.Println("done") }()
 
-	n, err := io.Copy(os.Stdout, a.src)
+	n, err := io.Copy(os.Stdout, app.src)
 	defer func() {
-		e2 := a.src.Close()
+		e2 := app.src.Close()
 		if err == nil {
 			err = e2
 		}
 	}()
-	a.Printf("copied %d bytes\n", n)
+	app.Printf("copied %d bytes\n", n)
 
 	return err
 }
