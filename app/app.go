@@ -8,7 +8,7 @@ import (
 	"os"
 
 	"github.com/carlmjohnson/flagext"
-	"github.com/peterbourgon/ff"
+	"github.com/peterbourgon/ff/v3"
 )
 
 const AppName = "go-cli"
