@@ -1,18 +1,8 @@
-# $NAME [![GoDoc](https://godoc.org/github.com/carlmjohnson/go-cli?status.svg)](https://godoc.org/github.com/carlmjohnson/go-cli) [![Go Report Card](https://goreportcard.com/badge/github.com/carlmjohnson/go-cli)](https://goreportcard.com/report/github.com/carlmjohnson/go-cli) [![Calver v0.YY.Minor](https://img.shields.io/badge/calver-v0.YY.Minor-22bfda.svg)](https://calver.org)
+# Go-CLI: A Template Repository for creating a Go CLI [![Calver v0.YY.Minor](https://img.shields.io/badge/calver-v0.YY.Minor-22bfda.svg)](https://calver.org)
 
-$DESCRIPTION
+To use this template to create a Go CLI:
 
-## Installation
-
-First install [Go](http://golang.org).
-
-If you just want to install the binary to your current directory and don't care about the source code, run
-
-```bash
-GOBIN="$(pwd)" GOPATH="$(mktemp -d)" go get github.com/carlmjohnson/go-cli
-```
-
-## Screenshots
-
-```bash
-```
+1. Follow [this link](https://github.com/carlmjohnson/go-cli/generate) to create a repository on Github or clone `https://github.com/carlmjohnson/go-cli.git` and create a repository with another host.
+2. Clone your new repo local.
+3. Change directory into initproj and run `go run .`. Follow prompts to customize your project.
+4. Commit initial changes and start work on your app.

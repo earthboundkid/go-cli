@@ -1,4 +1,4 @@
-# go-cli [![GoDoc](https://godoc.org/github.com/carlmjohnson/go-cli?status.svg)](https://godoc.org/github.com/carlmjohnson/go-cli) [![Go Report Card](https://goreportcard.com/badge/github.com/carlmjohnson/go-cli)](https://goreportcard.com/report/github.com/carlmjohnson/go-cli) [![Calver v0.YY.Minor](https://img.shields.io/badge/calver-v0.YY.Minor-22bfda.svg)](https://calver.org)
+# go-cli [![GoDoc](https://godoc.org/github.com/carlmjohnson/go-cli?status.svg)](https://godoc.org/github.com/carlmjohnson/go-cli) [![Go Report Card](https://goreportcard.com/badge/github.com/carlmjohnson/go-cli)](https://goreportcard.com/report/github.com/carlmjohnson/go-cli)
 
 $DESCRIPTION
 
