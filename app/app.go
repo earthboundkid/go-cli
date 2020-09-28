@@ -8,7 +8,6 @@ import (
 	"os"
 
 	"github.com/carlmjohnson/flagext"
-	"github.com/peterbourgon/ff/v3"
 )
 
 const AppName = "go-cli"
@@ -49,7 +48,10 @@ Options:
 		fl.PrintDefaults()
 		fmt.Fprintln(fl.Output(), "")
 	}
-	if err := ff.Parse(fl, args, ff.WithEnvVarPrefix("GO_CLI")); err != nil {
+	if err := fl.Parse(args); err != nil {
+		return err
+	}
+	if err := flagext.ParseEnv(fl, AppName); err != nil {
 		return err
 	}
 	return nil
