@@ -1,0 +1,182 @@
+author: Author full name? John Doe
+proj_full: Project full name? Project X
+proj_short: Project short name? {{tosnakecase .proj_full}}
+repo: Repo URL? github.com/{{ tosnakecase .author }}/{{.proj_short}}
+pkg: Application package name? app
+gversion: Go version? 1.16
+description: Project description?
+-- finalize.sh --
+#!/bin/bash
+
+set -eu -o pipefail
+
+# Get the directory that this script file is in
+THIS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
+
+cd "$THIS_DIR/{{.proj_short}}"
+go mod tidy
+go test ./...
+git init
+git add .
+git commit -m 'Init commit'
+
+-- {{.proj_short}}/.github/workflows/go.yml --
+name: Go
+
+on: [ push, pull_request ]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.x
+      uses: actions/setup-go@v2
+      with:
+        go-version: ^{{.gversion}}
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v2
+
+    - name: Get dependencies
+      run: go mod download
+
+    - name: Test
+      run: go test -v ./...
+-- {{.proj_short}}/.gitignore --
+-- {{.proj_short}}/LICENSE --
+MIT License
+
+Copyright (c) {{ now.Format "2006" }} {{ .author }}
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+-- README.md --
+# go-cli [![GoDoc](https://godoc.org/github.com/carlmjohnson/go-cli?status.svg)](https://godoc.org/github.com/carlmjohnson/go-cli) [![Go Report Card](https://goreportcard.com/badge/github.com/carlmjohnson/go-cli)](https://goreportcard.com/report/github.com/carlmjohnson/go-cli)
+
+{{ .description }}
+
+## Installation
+
+First install [Go](http://golang.org).
+
+If you just want to install the binary to your current directory and don't care about the source code, run
+
+```bash
+GOBIN="$(pwd)" GOPATH="$(mktemp -d)" go get github.com/carlmjohnson/go-cli
+```
+
+## Screenshots
+
+```bash
+```
+-- {{.proj_short}}/{{.pkg}}/{{.pkg}}.go --
+package {{.pkg}}
+
+import (
+	"flag"
+	"fmt"
+	"io"
+	"log"
+	"os"
+
+	"github.com/carlmjohnson/flagext"
+)
+
+const AppName = "{{.proj_full}}"
+
+func CLI(args []string) error {
+	var app appEnv
+	err := app.ParseArgs(args)
+	if err != nil {
+		return err
+	}
+	if err = app.Exec(); err != nil {
+		fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+	}
+	return err
+}
+
+func (app *appEnv) ParseArgs(args []string) error {
+	fl := flag.NewFlagSet(AppName, flag.ContinueOnError)
+	src := flagext.FileOrURL(flagext.StdIO, nil)
+	app.src = src
+	fl.Var(src, "src", "source file or URL")
+	app.Logger = log.New(nil, AppName+" ", log.LstdFlags)
+	flagext.LoggerVar(
+		fl, app.Logger, "verbose", flagext.LogVerbose, "log debug output")
+	fl.Usage = func() {
+		fmt.Fprintf(fl.Output(), `{{.proj_short}} - {{.description}}
+
+Usage:
+
+	{{.proj_short}} [options]
+
+Options:
+`)
+		fl.PrintDefaults()
+		fmt.Fprintln(fl.Output(), "")
+	}
+	if err := fl.Parse(args); err != nil {
+		return err
+	}
+	if err := flagext.ParseEnv(fl, AppName); err != nil {
+		return err
+	}
+	return nil
+}
+
+type appEnv struct {
+	src io.ReadCloser
+	*log.Logger
+}
+
+func (app *appEnv) Exec() (err error) {
+	app.Println("starting")
+	defer func() { app.Println("done") }()
+
+	n, err := io.Copy(os.Stdout, app.src)
+	defer func() {
+		e2 := app.src.Close()
+		if err == nil {
+			err = e2
+		}
+	}()
+	app.Printf("copied %d bytes\n", n)
+
+	return err
+}
+-- {{.proj_short}}/go.mod --
+module {{.repo}}
+
+go {{.gversion}}
+-- {{.proj_short}}/main.go --
+package main
+
+import (
+	"os"
+
+	"github.com/carlmjohnson/exitcode"
+	"{{.repo}}/{{.pkg}}"
+)
+
+func main() {
+	exitcode.Exit({{.pkg}}.CLI(os.Args[1:]))
+}

@@ -1,8 +1,5 @@
 module github.com/carlmjohnson/go-cli
 
-go 1.13
+go 1.16
 
-require (
-	github.com/carlmjohnson/exitcode v0.20.1
-	github.com/carlmjohnson/flagext v0.20.2
-)
+require github.com/carlmjohnson/springerle v0.21.2
