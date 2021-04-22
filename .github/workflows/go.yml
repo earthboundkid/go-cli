@@ -1,24 +1,26 @@
 name: Go
 
-on: [ push, pull_request ]
+on: [push, pull_request]
 jobs:
-
   build:
     name: Build
     runs-on: ubuntu-latest
     steps:
+      - name: Set up Go 1.x
+        uses: actions/setup-go@v2
+        with:
+          go-version: ^1.14
+        id: go
 
-    - name: Set up Go 1.x
-      uses: actions/setup-go@v2
-      with:
-        go-version: ^1.14
-      id: go
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
 
-    - name: Check out code into the Go module directory
-      uses: actions/checkout@v2
+      - name: Get dependencies
+        run: go mod download
 
-    - name: Get dependencies
-      run: go mod download
-
-    - name: Test
-      run: go test -v ./...
+      - name: Test
+        run: |
+          # Setup a git user, so test of finalize.sh will pass
+          git config --global user.name "Jane Doe"
+          git config --global user.email "user@example.com"
+          go test -v ./...
