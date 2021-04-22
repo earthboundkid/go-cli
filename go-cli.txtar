@@ -68,7 +68,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
--- README.md --
+-- {{.proj_short}}/README.md --
 # go-cli [![GoDoc](https://godoc.org/github.com/carlmjohnson/go-cli?status.svg)](https://godoc.org/github.com/carlmjohnson/go-cli) [![Go Report Card](https://goreportcard.com/badge/github.com/carlmjohnson/go-cli)](https://goreportcard.com/report/github.com/carlmjohnson/go-cli)
 
 {{ .description }}
