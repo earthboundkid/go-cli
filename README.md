@@ -1,4 +1,4 @@
-# Go-CLI: A Template Repository for creating a Go CLI [![Calver v0.YY.Minor](https://img.shields.io/badge/calver-v0.YY.Minor-22bfda.svg)](https://calver.org)
+# Go-CLI: A txtar template for creating a Go CLI application
 
 See https://blog.carlmjohnson.net/post/2020/go-cli-how-to-and-advice/ for background on this project.
 
