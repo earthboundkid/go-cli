@@ -1,7 +1,7 @@
 author: Author full name? John Doe
 proj_full: Project full name? Project X
-proj_short: Project short name? {{tosnakecase .proj_full}}
-repo: Repo URL? github.com/{{ tosnakecase .author }}/{{.proj_short}}
+proj_short: Project short name? {{xstringstosnakecase .proj_full}}
+repo: Repo URL? github.com/{{ xstringstosnakecase .author }}/{{.proj_short}}
 pkg: Application package name? app
 gversion: Go version? 1.16
 description: Project description?
@@ -49,7 +49,7 @@ jobs:
 -- {{.proj_short}}/LICENSE --
 MIT License
 
-Copyright (c) {{ now.Format "2006" }} {{ .author }}
+Copyright (c) {{ timenow.Format "2006" }} {{ .author }}
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
