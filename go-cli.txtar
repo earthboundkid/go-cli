@@ -3,7 +3,7 @@ proj_full: Project full name? Project X
 proj_short: Project short name? {{xstringstosnakecase .proj_full}}
 repo: Repo URL? github.com/{{ xstringstosnakecase .author }}/{{.proj_short}}
 pkg: Application package name? app
-gversion: Go version? 1.16
+gversion: Go version? 1.17
 description: Project description?
 -- finalize.sh --
 #!/bin/bash
