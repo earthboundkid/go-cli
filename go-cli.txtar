@@ -98,6 +98,7 @@ import (
 	"os"
 
 	"github.com/carlmjohnson/flagext"
+	"github.com/carlmjohnson/versioninfo"
 )
 
 const AppName = "{{.proj_full}}"
@@ -123,16 +124,17 @@ func (app *appEnv) ParseArgs(args []string) error {
 	flagext.LoggerVar(
 		fl, app.Logger, "verbose", flagext.LogVerbose, "log debug output")
 	fl.Usage = func() {
-		fmt.Fprintf(fl.Output(), `{{.proj_short}} - {{.description}}
+		fmt.Fprintf(fl.Output(), `{{.proj_short}} - %s
+
+{{.description}}
 
 Usage:
 
 	{{.proj_short}} [options]
 
 Options:
-`)
+`, versioninfo.Version)
 		fl.PrintDefaults()
-		fmt.Fprintln(fl.Output(), "")
 	}
 	if err := fl.Parse(args); err != nil {
 		return err
