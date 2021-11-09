@@ -15,10 +15,14 @@ THIS_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)
 
 cd "$THIS_DIR/{{.proj_short}}"
 go mod tidy
+go mod download
+go fmt .
 go test ./...
 git init
 git add .
 git commit -m 'Init commit'
+cd "$THIS_DIR"
+rm ./finalize.sh
 
 -- {{.proj_short}}/.github/workflows/go.yml --
 name: Go
