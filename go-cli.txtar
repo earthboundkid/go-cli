@@ -101,7 +101,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/carlmjohnson/flagext"
+	"github.com/carlmjohnson/flagx"
+	"github.com/carlmjohnson/flagx/lazyio"
 	"github.com/carlmjohnson/versioninfo"
 )
 
@@ -121,12 +122,11 @@ func CLI(args []string) error {
 
 func (app *appEnv) ParseArgs(args []string) error {
 	fl := flag.NewFlagSet(AppName, flag.ContinueOnError)
-	src := flagext.FileOrURL(flagext.StdIO, nil)
+	src := lazyio.FileOrURL(lazyio.StdIO, nil)
 	app.src = src
 	fl.Var(src, "src", "source file or URL")
-	app.Logger = log.New(nil, AppName+" ", log.LstdFlags)
-	flagext.LoggerVar(
-		fl, app.Logger, "verbose", flagext.LogVerbose, "log debug output")
+	app.Logger = log.New(io.Discard, AppName+" ", log.LstdFlags)
+	verbose := fl.Bool("verbose", false, "log debug output")
 	fl.Usage = func() {
 		fmt.Fprintf(fl.Output(), `{{.proj_short}} - %s
 
@@ -143,8 +143,11 @@ Options:
 	if err := fl.Parse(args); err != nil {
 		return err
 	}
-	if err := flagext.ParseEnv(fl, AppName); err != nil {
+	if err := flagx.ParseEnv(fl, AppName); err != nil {
 		return err
+	}
+	if *verbose {
+		app.Logger.SetOutput(os.Stderr)
 	}
 	return nil
 }

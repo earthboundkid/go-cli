@@ -17,7 +17,7 @@ func TestProj(t *testing.T) {
 			"proj_short": "project_x",
 			"repo": "github.com/john_doe/project_x",
 			"pkg": "app",
-			"gversion": "1.16",
+			"gversion": "1.18",
 			"description": "tktk"
 		}
 	`
