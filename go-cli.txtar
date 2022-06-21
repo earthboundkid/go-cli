@@ -126,7 +126,10 @@ func (app *appEnv) ParseArgs(args []string) error {
 	app.src = src
 	fl.Var(src, "src", "source file or URL")
 	app.Logger = log.New(io.Discard, AppName+" ", log.LstdFlags)
-	verbose := fl.Bool("verbose", false, "log debug output")
+	flagx.BoolFunc(fl, "verbose", "log debug output", func() error {
+		app.Logger.SetOutput(os.Stderr)
+		return nil
+	})
 	fl.Usage = func() {
 		fmt.Fprintf(fl.Output(), `{{.proj_short}} - %s
 
@@ -145,9 +148,6 @@ Options:
 	}
 	if err := flagx.ParseEnv(fl, AppName); err != nil {
 		return err
-	}
-	if *verbose {
-		app.Logger.SetOutput(os.Stderr)
 	}
 	return nil
 }
